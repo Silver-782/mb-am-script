@@ -34,28 +34,26 @@ def run():
     with sync_playwright() as p:
         edge_path = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
         
-        user_data_path = os.path.expanduser("~") + r"\AppData\Local\Microsoft\Edge\User Data"
+        user_data_path = os.path.expanduser("~") + r"\AppData\Local\Microsoft\Edge\Playwright Data"
 
-# 1. Launch Edge externally with a remote debugging port enabled
-    subprocess.Popen([
-        edge_path,
-        "--remote-debugging-port=9222",
-        f"--user-data-dir={user_data_path}",
-        "--profile-directory=Default"
-    ])
-    
-    time.sleep(3) 
-
-    with sync_playwright() as p:
-        browser = p.chromium.connect_over_cdp("http://localhost:9222")
-        context = browser.contexts[0]
+        context = p.chromium.launch_persistent_context(
+            user_data_dir=user_data_path,
+            executable_path=edge_path,
+            headless=False,
+            slow_mo=1000,
+            args=["--profile-directory=Default"] # Your specific flag
+        )
         
         if len(context.pages) > 0:
             page = context.pages[0]
         else:
             page = context.new_page()
 
-        print("Please log in to ServiceNow in the Edge window...")
+        page.goto("https://servicenow.i.mercedes-benz.com/")
+
+        print("\n" + "="*50)
+        input("🛑 PAUSED: Please complete your SSO login in the Edge window.\nPress ENTER in this terminal when you are fully logged in to continue...")
+        print("="*50 + "\n")
 
         for ticket in tickets:
             sys_id = ticket.get('sys_id')
