@@ -8,7 +8,7 @@ from datetime import datetime
 from playwright.sync_api import sync_playwright
 
 #
-ACK_MESSAGE = """Thank you for contacting the Mercedes-Benz Alice support.
+ACK_MESSAGE = """Thank you for contacting the Mercedes-Benz IAM support.
 We have received your request and will process it as soon as possible.
 
 Please refer to our Knowledge article for more information about our support process and resolution times.
